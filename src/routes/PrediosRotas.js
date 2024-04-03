@@ -2,6 +2,8 @@ const PrediosRepository = require("../repository/PrediosRepository.js");
 
 class PrediosRotas {
   static rotas(app) {
+
+    // criar pedido
     app.post("/predios", async (req, res) => {
       try {
         const predio = req.body;
@@ -12,6 +14,7 @@ class PrediosRotas {
       }
     });
 
+    //buscar todos predios
     app.get("/predios", async (req, res) => {
       try {
         const predios = await PrediosRepository.buscarTodosPredios();
@@ -21,7 +24,24 @@ class PrediosRotas {
       }
     });
 
+    // buscar todos predios por chave
     app.get("/predios/:key/:data", async (req, res) => {
+      try {
+        const predio = await PrediosRepository.buscarTodosPrediosPorChave(
+          req.params.key,
+          req.params.data
+        );
+        if (!predio) {
+          throw new Error("Chave e dados do prédio não foi encontrado");
+        }
+        res.status(200).json(predio);
+      } catch (erro) {
+        res.status(404).json({ message: erro.message, id: req.params.id });
+      }
+    });    
+    
+    // buscar predio por chave
+    app.get("/predio/:key/:data", async (req, res) => {
       try {
         const predio = await PrediosRepository.buscarPredioPorChave(
           req.params.key,
@@ -36,8 +56,10 @@ class PrediosRotas {
       }
     });
 
+    // atualizar predio por id
     //TODO - Implementar a rota de atualização de prédios
 
+    // deletar predio por chave
     app.delete("/predios/:key/:data", async (req, res) => {
       try {
         const predio = await PrediosRepository.buscarPredioPorChave(

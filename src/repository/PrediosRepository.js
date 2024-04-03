@@ -1,40 +1,46 @@
 const Predios = require("../models/PrediosModel.js");
-const Repository = require("./Repository.js");
 
-class PrediosRepository extends Repository {
+class PrediosRepository {
+
   static async criarPredio(predio) {
-    const response = await Repository.create(Predios, predio);
-    return response;
+    await Predios.create(predio);
+    return { Sucesso: "Sucesso no registro!" };
   }
 
   static async buscarTodosPredios() {
-    const response = await Repository.findAll(Predios);
+    const response = await Predios.find();
+    return response;
+  }
+
+  static async buscarTodosPrediosPorChave( key, value) {
+    const response = await Predios.find({ [key]: value });
     return response;
   }
 
   static async buscarPredioPorId(id) {
-    const response = await Repository.findById(Predios, id);
+    const response = await Predios.findOne({ _id: id });
     return response;
   }
 
-  static async buscarPredioPorChave(key, data) {
-    const response = await Repository.findByKey(Predios, key, data);
+  static async buscarPredioPorChave(key, value) {
+    const response = await Predios.find({ [key]: value });
     return response;
   }
 
-  static async atualizarPredioPorId(id, data) {
-    const response = await Repository.updateById(Predios, id, data);
-    return response;
+  static async atualizarPredioPorId(id, input) {
+    await Predios.findOneAndUpdate({ _id: id }, input);
+    return { message: "Sucesso na atualização de registro", id };
   }
 
   static async deletarPredioPorId(id) {
-    const response = await Repository.deleteById(Predios, id);
-    return response;
+    await Predios.findOneAndDelete({ _id: id });
+    return { message: "Sucesso na exclusão do registro", id };
   }
 
-  static async deletarPredioPorChave(key, data) {
-    const response = await Repository.deleteByKey(Predios, key, data);
-    return response;
+  static async deletarPredioPorChave(key, value) {
+    await Predios.findOneAndDelete({ [key]: value });
+    return { message: "Sucesso na exclusão do registro", key, value };
   }
+
 }
 module.exports = PrediosRepository;
